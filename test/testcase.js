@@ -24,6 +24,7 @@ if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER || IN_NODE) {
 if (IN_BROWSER || IN_NW || IN_EL) {
     test.add([
         testFileLoader_loadString,
+        testFileLoader_loadJSON,
         testFileLoader_loadBlob,
         testFileLoader_loadArrayBuffer,
         testFileLoader_toArrayBuffer_blob,
@@ -50,6 +51,23 @@ function testFileLoader_loadString(test, pass, miss) {
     };
 
     FileLoader.loadString(source, readyCallback, errorCallback);
+}
+
+function testFileLoader_loadJSON(test, pass, miss) {
+    var source = "../../package.json";
+
+    var readyCallback = function(result, source) {
+        if (result.name === "uupaa.fileloader.js") {
+            test.done(pass());
+        } else {
+            test.done(miss());
+        }
+    };
+    var errorCallback = function(error, source) {
+        test.done(miss());
+    };
+
+    FileLoader.loadJSON(source, readyCallback, errorCallback);
 }
 
 function testFileLoader_loadBlob(test, pass, miss) {

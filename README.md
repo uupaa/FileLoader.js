@@ -19,6 +19,7 @@ This module made of [WebModule](https://github.com/uupaa/WebModule).
 
 // load resource
 FileLoader.loadString(URLString, function(string) { ... });
+FileLoader.loadJSON(URLString, function(json) { ... });
 FileLoader.loadBlob(URLString, function(blob) { ... });
 FileLoader.loadArrayBuffer(URLString, function(arrayBuffer) { ... });
 
