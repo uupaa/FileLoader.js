@@ -2,7 +2,7 @@
 
 [![npm](https://nodei.co/npm/uupaa.fileloader.js.svg?downloads=true&stars=true)](https://nodei.co/npm/uupaa.fileloader.js/)
 
-File Loader.
+URL loader and type converter.
 
 This module made of [WebModule](https://github.com/uupaa/WebModule).
 

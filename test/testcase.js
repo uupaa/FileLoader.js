@@ -23,6 +23,7 @@ if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER) {
         testFileLoader_loadJSON,
         testFileLoader_loadBlob,
         testFileLoader_loadArrayBuffer,
+        testFileLoader_toArrayBuffer,
     ]);
 }
 if (IN_NODE) {
@@ -31,6 +32,7 @@ if (IN_NODE) {
         testFileLoader_loadJSON,
       //testFileLoader_loadBlob,
         testFileLoader_loadArrayBuffer,
+        testFileLoader_toArrayBuffer,
     ]);
 }
 
@@ -90,6 +92,22 @@ function testFileLoader_loadArrayBuffer(test, pass, miss) {
                       : "../../package.json";
 
     FileLoader.loadArrayBuffer(url, function(buffer, url) {
+        var result = TypedArray.toString( new Uint8Array(buffer) );
+        if ( /uupaa.fileloader.js/.test(result) ) {
+            test.done(pass());
+        } else {
+            test.done(miss());
+        }
+    }, function(error) {
+        test.done(miss());
+    });
+}
+
+function testFileLoader_toArrayBuffer(test, pass, miss) {
+    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
+                      : "../../package.json";
+
+    FileLoader.toArrayBuffer(url, function(buffer, url) {
         var result = TypedArray.toString( new Uint8Array(buffer) );
         if ( /uupaa.fileloader.js/.test(result) ) {
             test.done(pass());
