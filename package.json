@@ -1,6 +1,6 @@
 {
   "name": "uupaa.fileloader.js",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "File Loader.",
   "url": "https://github.com/uupaa/FileLoader.js",
   "keywords": ["File", "FileReader", "json", "blob", "arraybuffer", "uupaa", "WebModule", "Unstable"],
