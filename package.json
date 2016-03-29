@@ -1,9 +1,9 @@
 {
   "name": "uupaa.fileloader.js",
-  "version": "0.0.3",
-  "description": "File loader",
+  "version": "0.0.6",
+  "description": "File Loader.",
   "url": "https://github.com/uupaa/FileLoader.js",
-  "keywords": ["File", "FileReader", "blob", "arraybuffer", "uupaa", "WebModule", "Unstable"],
+  "keywords": ["File", "FileReader", "json", "blob", "arraybuffer", "uupaa", "WebModule", "Unstable"],
   "repository": {
     "type": "git",
     "url": "https://github.com/uupaa/FileLoader.js.git"
@@ -67,7 +67,9 @@
     }
   },
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "uupaa.typedarray.js": ""
+  },
   "lib": "./lib/",
   "main": "./index.js",
   "author": "uupaa",

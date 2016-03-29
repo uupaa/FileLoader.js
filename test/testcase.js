@@ -17,113 +17,88 @@ var test = new Test(["FileLoader"], { // Add the ModuleName to be tested here (i
         }
     });
 
-if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER || IN_NODE) {
-    test.add([
-    ]);
-}
-if (IN_BROWSER || IN_NW || IN_EL) {
+if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER) {
     test.add([
         testFileLoader_loadString,
         testFileLoader_loadJSON,
         testFileLoader_loadBlob,
         testFileLoader_loadArrayBuffer,
-        testFileLoader_toArrayBuffer_blob,
-    ]);
-}
-if (IN_WORKER) {
-    test.add([
     ]);
 }
 if (IN_NODE) {
     test.add([
+        testFileLoader_loadString,
+        testFileLoader_loadJSON,
+      //testFileLoader_loadBlob,
+        testFileLoader_loadArrayBuffer,
     ]);
 }
 
 // --- test cases ------------------------------------------
 function testFileLoader_loadString(test, pass, miss) {
-    var source = "./index.html";
+    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
+                      : "../../package.json";
 
-    var readyCallback = function(result, source) {
-        test.done(pass());
-    };
-    var errorCallback = function(error, source) {
+    FileLoader.loadString(url, function(result, url) {
+        if ( /uupaa.fileloader.js/.test(result) ) {
+            test.done(pass());
+        } else {
+            test.done(miss());
+        }
+    }, function(error) {
         test.done(miss());
-    };
-
-    FileLoader.loadString(source, readyCallback, errorCallback);
+    });
 }
 
 function testFileLoader_loadJSON(test, pass, miss) {
-    var source = "../../package.json";
+    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
+                      : "../../package.json";
 
-    var readyCallback = function(result, source) {
+    FileLoader.loadJSON(url, function(result, url) {
         if (result.name === "uupaa.fileloader.js") {
             test.done(pass());
         } else {
             test.done(miss());
         }
-    };
-    var errorCallback = function(error, source) {
+    }, function(error) {
         test.done(miss());
-    };
-
-    FileLoader.loadJSON(source, readyCallback, errorCallback);
+    });
 }
 
 function testFileLoader_loadBlob(test, pass, miss) {
-    var source = "./index.html";
+    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
+                      : "../../package.json";
 
-    var readyCallback = function(result, source) {
-        if (result instanceof Blob) {
-            test.done(pass());
-        } else {
+    FileLoader.loadBlob(url, function(blob, url) {
+        FileLoader.toArrayBuffer(blob, function(buffer) {
+            var result = TypedArray.toString( new Uint8Array(buffer) );
+            if ( /uupaa.fileloader.js/.test(result) ) {
+                test.done(pass());
+            } else {
+                test.done(miss());
+            }
+        }, function(error) {
             test.done(miss());
-        }
-    };
-    var errorCallback = function(error, source) {
+        });
+    }, function(error) {
         test.done(miss());
-    };
-
-    FileLoader.loadBlob(source, readyCallback, errorCallback);
+    });
 }
 
 function testFileLoader_loadArrayBuffer(test, pass, miss) {
-    var source = "./index.html";
+    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
+                      : "../../package.json";
 
-    var readyCallback = function(result, source) {
-        if (result instanceof ArrayBuffer) {
-            var u8a = new Uint8Array(result);
-            console.log(u8a.length);
+    FileLoader.loadArrayBuffer(url, function(buffer, url) {
+        var result = TypedArray.toString( new Uint8Array(buffer) );
+        if ( /uupaa.fileloader.js/.test(result) ) {
             test.done(pass());
         } else {
             test.done(miss());
         }
-    };
-    var errorCallback = function(error, source) {
+    }, function(error) {
         test.done(miss());
-    };
-
-    FileLoader.loadArrayBuffer(source, readyCallback, errorCallback);
-}
-
-function testFileLoader_toArrayBuffer_blob(test, pass, miss) {
-    var source = new Blob(["hello"], { type: "text/plain" });
-
-    var readyCallback = function(result, source) {
-        if (result && result.byteLength === 5) {
-            var text = String.fromCharCode.apply(null, new Uint8Array(result));
-            if (text === "hello") {
-                test.done(pass());
-                return;
-            }
-        }
-        test.done(miss());
-    };
-    var errorCallback = function(error, source) {
-        test.done(miss());
-    };
-
-    FileLoader.toArrayBuffer(source, readyCallback, errorCallback);
+    });
 }
 
 return test.run();
