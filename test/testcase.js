@@ -20,6 +20,7 @@ var test = new Test(["FileLoader"], { // Add the ModuleName to be tested here (i
 if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER) {
     test.add([
         testFileLoader_loadString,
+        testFileLoader_loadText,
         testFileLoader_loadJSON,
         testFileLoader_loadBlob,
         testFileLoader_loadArrayBuffer,
@@ -29,6 +30,7 @@ if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER) {
 if (IN_NODE) {
     test.add([
         testFileLoader_loadString,
+        testFileLoader_loadText,
         testFileLoader_loadJSON,
       //testFileLoader_loadBlob,
         testFileLoader_loadArrayBuffer,
@@ -42,6 +44,21 @@ function testFileLoader_loadString(test, pass, miss) {
                       : "../../package.json";
 
     FileLoader.loadString(url, function(result, url) {
+        if ( /uupaa.fileloader.js/.test(result) ) {
+            test.done(pass());
+        } else {
+            test.done(miss());
+        }
+    }, function(error) {
+        test.done(miss());
+    });
+}
+
+function testFileLoader_loadText(test, pass, miss) {
+    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
+                      : "../../package.json";
+
+    FileLoader.loadText(url, function(result, url) {
         if ( /uupaa.fileloader.js/.test(result) ) {
             test.done(pass());
         } else {
