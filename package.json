@@ -1,6 +1,6 @@
 {
   "name": "uupaa.fileloader.js",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "URL loader and type converter. URL -> String/JSON/Blob/ArrayBuffer, Blob/TypedArray/ArrayBuffer -> ArrayBuffer",
   "url": "https://github.com/uupaa/FileLoader.js",
   "keywords": ["File", "FileReader", "json", "blob", "arraybuffer", "uupaa", "WebModule", "Unstable"],
@@ -38,36 +38,44 @@
     "browser": {
       "output": "release/FileLoader.b.min.js",
       "source": [
-        "lib/FileLoader.js"
+        "lib/FileLoader.js",
+        "lib/FileLoaderQueue.js"
       ]
     },
     "worker": {
       "output": "release/FileLoader.w.min.js",
       "source": [
-        "lib/FileLoader.js"
+        "lib/FileLoader.js",
+        "lib/FileLoaderQueue.js"
       ]
     },
     "node": {
       "output": "release/FileLoader.n.min.js",
       "source": [
-        "lib/FileLoader.js"
+        "lib/FileLoader.js",
+        "lib/FileLoaderQueue.js"
       ]
     },
     "nw": {
       "output": "release/FileLoader.nw.min.js",
       "source": [
-        "lib/FileLoader.js"
+        "lib/FileLoader.js",
+        "lib/FileLoaderQueue.js"
       ]
     },
     "el": {
       "output": "release/FileLoader.el.min.js",
       "source": [
-        "lib/FileLoader.js"
+        "lib/FileLoader.js",
+        "lib/FileLoaderQueue.js"
       ]
     }
   },
-  "dependencies": {},
+  "dependencies": {
+    "uupaa.uri.js": ""
+  },
   "devDependencies": {
+    "uupaa.task.js": "",
     "uupaa.typedarray.js": ""
   },
   "lib": "./lib/",

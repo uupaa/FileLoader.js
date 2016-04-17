@@ -18,9 +18,13 @@ onmessage = function(event) {
     WebModule.VERBOSE = true;
     WebModule.PUBLISH = true;
 
+    importScripts("../../node_modules/uupaa.task.js/lib/Task.js");
+    importScripts("../../node_modules/uupaa.task.js/lib/TaskMap.js");
     importScripts("../../node_modules/uupaa.typedarray.js/lib/TypedArray.js");
+    importScripts("../../node_modules/uupaa.uri.js/lib/URI.js");
     importScripts("../wmtools.js");
     importScripts("../../lib/FileLoader.js");
+    importScripts("../../lib/FileLoaderQueue.js");
     importScripts("../../release/FileLoader.w.min.js");
     importScripts("../testcase.js");
 
