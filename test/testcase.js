@@ -43,6 +43,12 @@ if (IN_NODE) {
     ]);
 }
 
+if (IN_EL) {
+    test.add([
+        testFileLoader_loadBlobURL,
+    ]);
+}
+
 // --- test cases ------------------------------------------
 function testFileLoader_loadString(test, pass, miss) {
     var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
@@ -242,6 +248,28 @@ function testFileLoaderQueue_clear(test, pass, miss) {
     } else {
         test.done(miss());
     }
+}
+
+function testFileLoader_loadBlobURL(test, pass, miss) {
+    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
+                      : "../../package.json";
+
+    FileLoader.loadBlob(url, function(blob, url) {
+        var blobURL = URL.createObjectURL(blob);
+
+        FileLoader.toArrayBuffer(blobURL, function(buffer) {
+            var result = TypedArray.toString( new Uint8Array(buffer) );
+            if ( /uupaa.fileloader.js/.test(result) ) {
+                test.done(pass());
+            } else {
+                test.done(miss());
+            }
+        }, function(error) {
+            test.done(miss());
+        });
+    }, function(error) {
+        test.done(miss());
+    });
 }
 
 return test.run();
