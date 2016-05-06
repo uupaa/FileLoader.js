@@ -17,12 +17,20 @@ var test = new Test(["FileLoader"], { // Add the ModuleName to be tested here (i
         }
     });
 
-if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER) {
+if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER || IN_NODE) {
     test.add([
         testFileLoader_loadString,
         testFileLoader_loadText,
         testFileLoader_loadJSON,
+    ]);
+}
+if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER) {
+    test.add([
         testFileLoader_loadBlob,
+    ]);
+}
+if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER || IN_NODE) {
+    test.add([
         testFileLoader_loadArrayBuffer,
         testFileLoader_toArrayBuffer,
         testFileLoaderQueue_add,
@@ -32,18 +40,7 @@ if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER) {
         testFileLoaderQueue_clear,
     ]);
 }
-if (IN_NODE) {
-    test.add([
-        testFileLoader_loadString,
-        testFileLoader_loadText,
-        testFileLoader_loadJSON,
-      //testFileLoader_loadBlob,
-        testFileLoader_loadArrayBuffer,
-        testFileLoader_toArrayBuffer,
-    ]);
-}
-
-if (IN_EL) {
+if (IN_EL || IN_NW) {
     test.add([
         testFileLoader_loadBlobURL,
     ]);
@@ -186,12 +183,14 @@ function testFileLoaderQueue_add_cacheBusting(test, pass, miss) {
     var queue = new FileLoaderQueue();
 
     queue.add(url, "json", function(result, url) {
+console.log("testFileLoaderQueue_add_cacheBusting", url);
         if (/lol=/.test(url)) { // url has "...?lol=..."
             test.done(pass());
         } else {
             test.done(miss());
         }
     }, function(error, url) {
+console.log("testFileLoaderQueue_add_cacheBusting", error, url);
         test.done(miss());
     }, { cacheBusting: "lol" });
 }
@@ -201,7 +200,7 @@ function testFileLoaderQueue_add_highPriority(test, pass, miss) {
                       : "../../package.json";
 
     var task = new Task("testFileLoaderQueue_add_highPriority", 3, function(error, buffer) {
-        if (buffer.join() === "LOW,HIGH,LOW") { // interrupt high priority job
+        if (buffer.join() === "HIGH,LOW,LOW") { // interrupt high priority job
             console.log( buffer.join() );
             test.done(pass());
         } else {
