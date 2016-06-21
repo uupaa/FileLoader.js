@@ -17,34 +17,36 @@ var test = new Test(["FileLoader"], { // Add the ModuleName to be tested here (i
         }
     });
 
-if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER || IN_NODE) {
-    test.add([
-        testFileLoader_loadString,
-        testFileLoader_loadText,
-        testFileLoader_loadJSON,
-    ]);
-}
-if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER) {
+test.add([
+    testFileLoader_loadString,
+    testFileLoader_loadText,
+    testFileLoader_loadJSON,
+    testFileLoader_loadArrayBuffer,
+    testFileLoader_toArrayBuffer,
+    testFileLoaderQueue_add,
+    testFileLoaderQueue_add_retry_to_error,
+    testFileLoaderQueue_add_cacheBusting,
+    testFileLoaderQueue_add_highPriority,
+    testFileLoaderQueue_clear,
+]);
+
+if (global["Blob"]) { // exclude IN_NODE
     test.add([
         testFileLoader_loadBlob,
     ]);
+    if (IN_EL || IN_NW) {
+        test.add([
+            testFileLoader_loadBlobURL,
+        ]);
+    }
 }
-if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER || IN_NODE) {
-    test.add([
-        testFileLoader_loadArrayBuffer,
-        testFileLoader_toArrayBuffer,
-        testFileLoaderQueue_add,
-        testFileLoaderQueue_add_retry_to_error,
-        testFileLoaderQueue_add_cacheBusting,
-        testFileLoaderQueue_add_highPriority,
-        testFileLoaderQueue_clear,
-    ]);
-}
-if (IN_EL || IN_NW) {
-    test.add([
-        testFileLoader_loadBlobURL,
-    ]);
-}
+
+test.add([
+    testFileLoader_loadString_options_dump,
+    testFileLoader_loadJSON_options_dump,
+    testFileLoader_loadArrayBuffer_options_dump,
+    testFileLoader_loadBlob_options_dump
+]);
 
 // --- test cases ------------------------------------------
 function testFileLoader_loadString(test, pass, miss) {
@@ -269,6 +271,72 @@ function testFileLoader_loadBlobURL(test, pass, miss) {
     }, function(error) {
         test.done(miss());
     });
+}
+
+function testFileLoader_loadString_options_dump(test, pass, miss) {
+    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
+                      : "../../package.json";
+
+    FileLoader.loadString(url, function(result, url) {
+        if ( /uupaa.fileloader.js/.test(result) ) {
+            test.done(pass());
+        } else {
+            test.done(miss());
+        }
+    }, function(error) {
+        test.done(miss());
+    }, { dump: true });
+}
+
+function testFileLoader_loadJSON_options_dump(test, pass, miss) {
+    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
+                      : "../../package.json";
+
+    FileLoader.loadJSON(url, function(result, url) {
+        if (result.name === "uupaa.fileloader.js") {
+            test.done(pass());
+        } else {
+            test.done(miss());
+        }
+    }, function(error) {
+        test.done(miss());
+    }, { dump: true });
+}
+
+function testFileLoader_loadArrayBuffer_options_dump(test, pass, miss) {
+    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
+                      : "../../package.json";
+
+    FileLoader.loadArrayBuffer(url, function(buffer, url) {
+        var result = TypedArray.toString( new Uint8Array(buffer) );
+        if ( /uupaa.fileloader.js/.test(result) ) {
+            test.done(pass());
+        } else {
+            test.done(miss());
+        }
+    }, function(error) {
+        test.done(miss());
+    }, { dump: true });
+}
+
+function testFileLoader_loadBlob_options_dump(test, pass, miss) {
+    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
+                      : "../../package.json";
+
+    FileLoader.loadBlob(url, function(blob, url) {
+        FileLoader.toArrayBuffer(blob, function(buffer) {
+            var result = TypedArray.toString( new Uint8Array(buffer) );
+            if ( /uupaa.fileloader.js/.test(result) ) {
+                test.done(pass());
+            } else {
+                test.done(miss());
+            }
+        }, function(error) {
+            test.done(miss());
+        });
+    }, function(error) {
+        test.done(miss());
+    }, { dump: true });
 }
 
 return test.run();
