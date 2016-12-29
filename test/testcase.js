@@ -45,8 +45,13 @@ test.add([
     testFileLoader_loadString_options_dump,
     testFileLoader_loadJSON_options_dump,
     testFileLoader_loadArrayBuffer_options_dump,
-    testFileLoader_loadBlob_options_dump
 ]);
+
+if (global["Blob"]) { // exclude IN_NODE
+    test.add([
+        testFileLoader_loadBlob_options_dump
+    ]);
+}
 
 // --- test cases ------------------------------------------
 function testFileLoader_loadString(test, pass, miss) {
