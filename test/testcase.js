@@ -51,6 +51,11 @@ if (global["Blob"]) { // exclude IN_NODE
     test.add([
         testFileLoader_loadBlob_options_dump
     ]);
+} else {
+    // Node.js は Blob をサポートしていないため、loadBlog は ArrayBuffer を返す
+    test.add([
+        testFileLoader_loadBlob_options_dump_in_node
+    ]);
 }
 
 // --- test cases ------------------------------------------
@@ -343,6 +348,23 @@ function testFileLoader_loadBlob_options_dump(test, pass, miss) {
         test.done(miss());
     }, { dump: true });
 }
+
+function testFileLoader_loadBlob_options_dump_in_node(test, pass, miss) {
+    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
+                      : "../../package.json";
+
+    FileLoader.loadBlob(url, function(arraybuffer, url) { // Node.js では loadBlob は Blob ではなく ArrayBuffer を返す
+            var result = TypedArray.toString( new Uint8Array(arraybuffer) );
+            if ( /uupaa.fileloader.js/.test(result) ) {
+                test.done(pass());
+            } else {
+                test.done(miss());
+            }
+    }, function(error) {
+        test.done(miss());
+    }, { dump: true });
+}
+
 
 return test.run();
 
