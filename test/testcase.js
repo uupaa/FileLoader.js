@@ -41,20 +41,12 @@ if (global["Blob"]) { // exclude IN_NODE
     }
 }
 
-test.add([
-    testFileLoader_loadString_options_dump,
-    testFileLoader_loadJSON_options_dump,
-    testFileLoader_loadArrayBuffer_options_dump,
-]);
-
-if (global["Blob"]) { // exclude IN_NODE
-    test.add([
-        testFileLoader_loadBlob_options_dump
-    ]);
-} else {
+if (IN_NODE) {
     // Node.js は Blob をサポートしていないため、loadBlog は ArrayBuffer を返す
     test.add([
-        testFileLoader_loadBlob_options_dump_in_node
+        testFileLoader_loadBlob_in_node,
+        testFileLoader_loadString_remote_in_node,
+        testFileLoader_loadArrayBuffer_remote_in_node,
     ]);
 }
 
@@ -283,73 +275,7 @@ function testFileLoader_loadBlobURL(test, pass, miss) {
     });
 }
 
-function testFileLoader_loadString_options_dump(test, pass, miss) {
-    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
-                      : "../../package.json";
-
-    FileLoader.loadString(url, function(result, url) {
-        if ( /uupaa.fileloader.js/.test(result) ) {
-            test.done(pass());
-        } else {
-            test.done(miss());
-        }
-    }, function(error) {
-        test.done(miss());
-    }, { dump: true });
-}
-
-function testFileLoader_loadJSON_options_dump(test, pass, miss) {
-    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
-                      : "../../package.json";
-
-    FileLoader.loadJSON(url, function(result, url) {
-        if (result.name === "uupaa.fileloader.js") {
-            test.done(pass());
-        } else {
-            test.done(miss());
-        }
-    }, function(error) {
-        test.done(miss());
-    }, { dump: true });
-}
-
-function testFileLoader_loadArrayBuffer_options_dump(test, pass, miss) {
-    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
-                      : "../../package.json";
-
-    FileLoader.loadArrayBuffer(url, function(buffer, url) {
-        var result = TypedArray.toString( new Uint8Array(buffer) );
-        if ( /uupaa.fileloader.js/.test(result) ) {
-            test.done(pass());
-        } else {
-            test.done(miss());
-        }
-    }, function(error) {
-        test.done(miss());
-    }, { dump: true });
-}
-
-function testFileLoader_loadBlob_options_dump(test, pass, miss) {
-    var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
-                      : "../../package.json";
-
-    FileLoader.loadBlob(url, function(blob, url) {
-        FileLoader.toArrayBuffer(blob, function(buffer) {
-            var result = TypedArray.toString( new Uint8Array(buffer) );
-            if ( /uupaa.fileloader.js/.test(result) ) {
-                test.done(pass());
-            } else {
-                test.done(miss());
-            }
-        }, function(error) {
-            test.done(miss());
-        });
-    }, function(error) {
-        test.done(miss());
-    }, { dump: true });
-}
-
-function testFileLoader_loadBlob_options_dump_in_node(test, pass, miss) {
+function testFileLoader_loadBlob_in_node(test, pass, miss) {
     var url = IN_NODE ? "package.json" // Because node.js process.cwd() -> "~/your/path/FileLoader"
                       : "../../package.json";
 
@@ -362,9 +288,37 @@ function testFileLoader_loadBlob_options_dump_in_node(test, pass, miss) {
             }
     }, function(error) {
         test.done(miss());
-    }, { dump: true });
+    });
 }
 
+function testFileLoader_loadString_remote_in_node(test, pass, miss) {
+    var url = "http://example.com";
+
+    FileLoader.loadString(url, function(result, url) {
+        if ( /example domain/i.test(result) ) {
+            test.done(pass());
+        } else {
+            test.done(miss());
+        }
+    }, function(error) {
+        test.done(miss());
+    });
+}
+
+function testFileLoader_loadArrayBuffer_remote_in_node(test, pass, miss) {
+    var url = "http://example.com";
+
+    FileLoader.loadArrayBuffer(url, function(buffer, url) {
+        var result = TypedArray.toString( new Uint8Array(buffer) );
+        if ( /example domain/i.test(result) ) {
+            test.done(pass());
+        } else {
+            test.done(miss());
+        }
+    }, function(error) {
+        test.done(miss());
+    });
+}
 
 return test.run();
 
