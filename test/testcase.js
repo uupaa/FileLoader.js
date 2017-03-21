@@ -19,6 +19,7 @@ var test = new Test(["FileLoader"], { // Add the ModuleName to be tested here (i
 
 test.add([
     testFileLoader_loadString,
+    testFileLoader_loadString_timeout,
     testFileLoader_loadText,
     testFileLoader_loadJSON,
     testFileLoader_loadArrayBuffer,
@@ -64,6 +65,16 @@ function testFileLoader_loadString(test, pass, miss) {
     }, function(error) {
         test.done(miss());
     });
+}
+
+function testFileLoader_loadString_timeout(test, pass, miss) {
+    var url = "404.file";
+
+    FileLoader.loadString(url, function(result, url) {
+        test.done(miss());
+    }, function(error, url, code) { // error.detail = { url, code }
+        test.done(pass());
+    }, { timeout: 1000 });
 }
 
 function testFileLoader_loadText(test, pass, miss) {
