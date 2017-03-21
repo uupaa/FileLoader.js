@@ -1,6 +1,6 @@
 {
   "name": "uupaa.fileloader.js",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "URL loader and type converter. URL -> String/JSON/Blob/ArrayBuffer, Blob/TypedArray/ArrayBuffer -> ArrayBuffer",
   "url": "https://github.com/uupaa/FileLoader.js",
   "keywords": ["File", "FileReader", "json", "blob", "arraybuffer", "uupaa", "WebModule", "Unstable"],
@@ -76,6 +76,7 @@
     "request": ""
   },
   "devDependencies": {
+    "uupaa.es.js": "",
     "uupaa.task.js": "",
     "uupaa.typedarray.js": ""
   },

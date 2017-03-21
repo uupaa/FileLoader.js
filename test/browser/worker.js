@@ -18,6 +18,7 @@ onmessage = function(event) {
     WebModule.VERBOSE = true;
     WebModule.PUBLISH = true;
 
+    importScripts("../../node_modules/uupaa.es.js/lib/ES.js");
     importScripts("../../node_modules/uupaa.task.js/lib/Task.js");
     importScripts("../../node_modules/uupaa.task.js/lib/TaskMap.js");
     importScripts("../../node_modules/uupaa.typedarray.js/lib/TypedArray.js");

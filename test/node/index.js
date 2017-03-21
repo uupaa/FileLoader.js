@@ -6,6 +6,7 @@ WebModule.VERIFY  = true;
 WebModule.VERBOSE = true;
 WebModule.PUBLISH = true;
 
+require("../../node_modules/uupaa.es.js/lib/ES.js");
 require("../../node_modules/uupaa.task.js/lib/Task.js");
 require("../../node_modules/uupaa.task.js/lib/TaskMap.js");
 require("../../node_modules/uupaa.typedarray.js/lib/TypedArray.js");
